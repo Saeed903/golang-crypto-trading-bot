@@ -292,6 +292,43 @@ func (wrapper *BinanceWrapper) GetCandles(market *environment.Market) ([]environ
 	return ret, nil
 }
 
+// GetCandles gets the candle data from the exchange.
+func (wrapper *BinanceWrapper) GetCandlesByInterval(market *environment.Market, interval string) ([]environment.CandleStick, error) {
+	if !wrapper.websocketOn {
+		binanceCandles, err := wrapper.api.NewKlinesService().Interval(interval).Symbol(MarketNameFor(market, wrapper)).Do(context.Background())
+		if err != nil {
+			return nil, err
+		}
+
+		ret := make([]environment.CandleStick, len(binanceCandles))
+
+		for i, binanceCandle := range binanceCandles {
+			high, _ := decimal.NewFromString(binanceCandle.High)
+			open, _ := decimal.NewFromString(binanceCandle.Open)
+			close, _ := decimal.NewFromString(binanceCandle.Close)
+			low, _ := decimal.NewFromString(binanceCandle.Low)
+			volume, _ := decimal.NewFromString(binanceCandle.Volume)
+
+			ret[i] = environment.CandleStick{
+				High:   high,
+				Open:   open,
+				Close:  close,
+				Low:    low,
+				Volume: volume,
+			}
+		}
+
+		wrapper.candles.Set(market, ret)
+	}
+
+	ret, candleLoaded := wrapper.candles.Get(market)
+	if !candleLoaded {
+		return nil, errors.New("No candle data yet")
+	}
+
+	return ret, nil
+}
+
 // GetBalance gets the balance of the user of the specified currency.
 func (wrapper *BinanceWrapper) GetBalance(symbol string) (*decimal.Decimal, error) {
 	binanceAccount, err := wrapper.api.NewGetAccountService().Do(context.Background())
