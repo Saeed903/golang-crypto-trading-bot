@@ -156,7 +156,7 @@ func (wrapper *BinanceWrapper) BuyStopLimit(market *environment.Market, amount f
 }
 
 //StopLimit performs a stop limit sell action
-func (wrapper *BinanceWrapper) SellStopLimit(market *environment.Market, amount float64, limit float64) (string, err) {
+func (wrapper *BinanceWrapper) SellStopLimit(market *environment.Market, amount float64, limit float64) (string, error) {
 	orderNumber, err := wrapper.api.NewCreateOrderService().Type(binance.OrderTypeStopLossLimit).
 		Side(binance.SideTypeSell).Symbol(MarketNameFor(market, wrapper)).
 		Price(fmt.Sprint(limit)).Quantity(fmt.Sprint(amount)).Do(context.Background())
