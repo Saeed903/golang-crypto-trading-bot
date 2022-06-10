@@ -144,9 +144,34 @@ func (wrapper *BinanceWrapper) orderbookFromREST(market *environment.Market) (*e
 	return &orderBook, binanceOrderBook.LastUpdateID, nil
 }
 
+//StopLimit performs a stop limit buy action
+func (wrapper *BinanceWrapper) BuyStopLimit(market *environment.Market, amount float64, limit float64) (string, error) {
+	orderNumber, err := wrapper.api.NewCreateOrderService().Type(binance.OrderTypeStopLossLimit).
+		Side(binance.SideTypeBuy).Symbol(MarketNameFor(market, wrapper)).
+		Price(fmt.Sprint(limit)).Quantity(fmt.Sprint(amount)).Do(context.Background())
+	if err != nil {
+		return "", err
+	}
+	return orderNumber.ClientOrderID, nil
+}
+
+//StopLimit performs a stop limit sell action
+func (wrapper *BinanceWrapper) SellStopLimit(market *environment.Market, amount float64, limit float64) (string, err) {
+	orderNumber, err := wrapper.api.NewCreateOrderService().Type(binance.OrderTypeStopLossLimit).
+		Side(binance.SideTypeSell).Symbol(MarketNameFor(market, wrapper)).
+		Price(fmt.Sprint(limit)).Quantity(fmt.Sprint(amount)).Do(context.Background())
+	if err != nil {
+		return "", err
+	}
+	return orderNumber.ClientOrderID, nil
+
+}
+
 // BuyLimit performs a limit buy action.
 func (wrapper *BinanceWrapper) BuyLimit(market *environment.Market, amount float64, limit float64) (string, error) {
-	orderNumber, err := wrapper.api.NewCreateOrderService().Type(binance.OrderTypeLimit).Side(binance.SideTypeBuy).Symbol(MarketNameFor(market, wrapper)).Price(fmt.Sprint(limit)).Quantity(fmt.Sprint(amount)).Do(context.Background())
+	orderNumber, err := wrapper.api.NewCreateOrderService().Type(binance.OrderTypeLimit).
+		Side(binance.SideTypeBuy).Symbol(MarketNameFor(market, wrapper)).
+		Price(fmt.Sprint(limit)).Quantity(fmt.Sprint(amount)).Do(context.Background())
 	if err != nil {
 		return "", err
 	}
