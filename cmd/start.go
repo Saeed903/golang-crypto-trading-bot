@@ -46,6 +46,7 @@ func init() {
 }
 
 func initConfigs() error {
+	fmt.Println(GlobalFlags.ConfigFile)
 	configFile, err := os.Open(GlobalFlags.ConfigFile)
 	if err != nil {
 		return err

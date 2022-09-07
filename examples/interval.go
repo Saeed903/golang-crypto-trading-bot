@@ -40,12 +40,13 @@ var Watch5Sec = strategies.IntervalStrategy{
 			return nil
 		},
 		OnUpdate: func(wrappers []exchanges.ExchangeWrapper, markets []*environment.Market) error {
-			_, err := wrappers[0].GetMarketSummary(markets[0])
+			gms, err := wrappers[0].GetMarketSummary(markets[0])
 			if err != nil {
 				return err
 			}
-			logrus.Info(markets)
-			logrus.Info(wrappers)
+			logrus.Info(markets[0])
+			logrus.Info(wrappers[0])
+			fmt.Println(gms)
 			return nil
 		},
 		OnError: func(err error) {
@@ -103,7 +104,7 @@ var TelegramIntegrationExample = strategies.IntervalStrategy{
 		Name: "TelegramIntegrationExample",
 		Setup: func([]exchanges.ExchangeWrapper, []*environment.Market) error {
 			telegramBot, err := tb.NewBot(tb.Settings{
-				Token:  "YOUR-TELEGRAM-TOKEN",
+				Token:  "5259040507:AAFOOjb_VBQdPgMyu6rhRxFA-vODRmobRe4",
 				Poller: &tb.LongPoller{Timeout: 10 * time.Second},
 			})
 
@@ -116,7 +117,7 @@ var TelegramIntegrationExample = strategies.IntervalStrategy{
 		},
 		OnUpdate: func([]exchanges.ExchangeWrapper, []*environment.Market) error {
 			telegramBot.Send(&tb.User{
-				Username: "YOUR-USERNAME-GROUP-OR-USER",
+				Username: "SadrERP",
 			}, "OMG SOMETHING HAPPENING!!!!!", tb.SendOptions{})
 
 			/*
@@ -136,6 +137,7 @@ var TelegramIntegrationExample = strategies.IntervalStrategy{
 			return nil
 		},
 	},
+	Interval: time.Second * 5,
 }
 
 var discordBot *discordgo.Session

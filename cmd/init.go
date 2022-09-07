@@ -183,14 +183,14 @@ func generateInitFile() {
 	}
 	fmt.Println("The following content:")
 	fmt.Println(string(contentToBeWritten))
-	fmt.Println("is going to be written on ./.gobot, is it ok? (Y/n)")
+	fmt.Println("is going to be written on ./.bot_config.yml, is it ok? (Y/n)")
 
 	var YesNo string
 	for YesNo != "Y" && YesNo != "n" {
 		fmt.Scanln(&YesNo)
 	}
 	if YesNo == "Y" {
-		err := ioutil.WriteFile("./.gobot", contentToBeWritten, 0666)
+		err := ioutil.WriteFile("./.bot_config.yml", contentToBeWritten, 0666)
 		if err != nil {
 			fmt.Print("Error while writing content to new config file")
 			if GlobalFlags.Verbose > 0 {
@@ -198,7 +198,7 @@ func generateInitFile() {
 			}
 			fmt.Println()
 		} else {
-			fmt.Println("Config file created on ./.gobot\nNow you can use gobot with this configuration.\nHappy Trading, folk :)")
+			fmt.Println("Config file created on ./.bot_config.yml\nNow you can use gobot with this configuration.\nHappy Trading, folk :)")
 		}
 		return
 	}
